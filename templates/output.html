@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            background-image: url("static/images/background.jpg");
+            background-size: cover;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            font-size: 300%; 
+        }
+    </style>
+</head>
+<body>
+    <table>
+        <tr>
+            <th>Rain Fall</th>
+            <td>{{data.rainfall}}</td>
+        </tr>
+        <tr>
+            <th>Fertilizer</th>
+            <td>{{data.fertilizer}}</td>
+        </tr>
+        <tr>
+            <th>Temperature</th>
+            <td>{{data.temperature}}</td>
+        </tr>
+        <tr>
+            <th>Nitrogen</th>
+            <td>{{data.nitrogen}}</td>
+        </tr>
+        <tr>
+            <th>Phosphorus</th>
+            <td>{{data.phosphorus}}</td>
+        </tr>
+        <tr>
+            <th>Potassium</th>
+            <td>{{data.potassium}}</td>
+        </tr>
+        <tr>
+            <th>Yield</th>
+            <td>{{prediction}}</td>
+        </tr>
+    </table>
+</body>
+</html>

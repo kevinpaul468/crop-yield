@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Page</title>
+    <link rel="stylesheet" href="../static/admin.css">
+</head>
+
+<body>
+    {% if not is_logged_in %}
+    <h1>Admin Page</h1>
+    <div id="loginContainer" class="modal">
+        <form id="loginForm" class="modal-content animate" method="post">
+
+            <div class="container">
+                <label for="email">
+                    <b>email</b>
+                </label>
+                <input type="text" id="email" placeholder="Enter email" name="email">
+
+                <label for="password">
+                    <b>Password</b>
+                </label>
+                <input type="password" id="password" placeholder="Enter Password" name="password">
+
+                <button type="submit" class='btn btn-success login '>Submit</button>
+            </div>
+        </form>
+    </div>
+    {% else %}
+    <h1 id="welcome">Welcome, Admin</h1>
+
+    <div>
+        <img src="/static/images/svm1.jpeg" style="float: left; ">
+        <img src="/static/images/svm2.jpeg" style="float: left; ">
+    </div>
+
+    <canvas id="myChart"></canvas>
+    <div class="table-container">
+        <table>
+            <tr>
+                <th>Email</th>
+                <th>rainfall</th>
+                <th>fertilizer</th>
+                <th>temperature</th>
+                <th>nitrogen</th>
+                <th>phospherous</th>
+                <th>pottasium</th>
+                <th>yield</th>
+            </tr>
+
+            {% for row in rows %}
+            <tr>
+                {% for value in row %}
+                <td>{{ value }}</td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    <canvas id="myChart"></canvas>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    var ctx = document.getElementById('myChart').getContext('2d');
+    var rainfall_values = JSON.parse('{{ rainfall_values | tojson | safe }}');
+    var yield_values = JSON.parse('{{ yield_values | tojson | safe }}'); 
+    
+    var dataPoints = rainfall_values.map(function(rainfall, index) {
+        return {
+            x: rainfall,  // Assign the rainfall as the x-axis value
+            y: yield_values[index]
+        };
+    });
+
+    // Sort dataPoints based on rainfall
+    dataPoints.sort(function(a, b) {
+        return a.x - b.x;
+    });
+
+    var myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            datasets: [{
+                label: 'Rainfall vs Yield',
+                data: dataPoints,
+                borderColor: 'rgba(255, 99, 132, 1)',
+                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                borderWidth: 1,
+                fill: false,
+                showLine: true  // This line is optional as 'showLine' is true by default for line charts
+            }]
+        },
+        options: {
+            scales: {
+                x: {
+                    type: 'linear',  // Specify that the x-axis is a linear scale
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Rainfall'
+                    }
+                },
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Yield'
+                    }
+                }
+            }
+        }
+    });
+</script>
+    {% endif %}
+    </body>
+
+    </html>

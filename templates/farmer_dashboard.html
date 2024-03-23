@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/dashboard.css">
+    <title>Document</title>
+    
+</head>
+<body>
+
+    <h1 style="text-align: center;">welcome {{name}}</h1>
+
+    <div style="text-align: center;">
+        <img src="/static/images/farmer.avif" alt="farmer.jpg" height="600cm" width="400cm" style="display: block; margin-left: auto; margin-right: auto;">
+    </div>
+    
+    <div  style="margin-left: auto; margin-right: auto; width: 50%;">
+        <table border="1">
+            <th>rainfall</th>
+            <th>fertilizer</th>
+            <th>temperature</th>
+            <th>nitrogen</th>
+            <th>phospherous</th>
+            <th>pottasium</th>
+            <th>yield</th>
+
+        {% for row in rows %}
+        <tr>
+            {% for value in row[1:] %}
+            <td>{{ value }}</td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </table>
+
+
+    <h2> make new prediction</h2>
+    <form action="/predict" method="post">
+        <input type="hidden" name="email" value="{{email}}">
+        <button type="submit">predict now</button>
+    </form>
+    </div>
+
+
+</body>
+</html>

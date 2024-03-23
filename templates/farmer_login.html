@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farmer Login</title>
+    <!-- <link rel="stylesheet" href="farmer_login.css"> -->
+    <link rel="stylesheet" href="../static/farlogin.css">
+    
+
+</head>
+
+<body>
+    <div id="loginContainer" class="modal">
+        <form id="loginForm" class="modal-content animate" action="/farmer_dashboard" method="post">
+
+            <div class="container">
+                <label for="email">
+                    <b>email</b>
+                </label>
+                <input type="text" id="email" placeholder="Enter email" name="email" >
+
+                <label for="password">
+                    <b>Password</b>
+                </label>
+                <input type="password" id="password" placeholder="Enter Password" name="password" >
+
+                <button type="submit" class='btn btn-success login '>Submit</button>
+            </div>
+
+            <div class="container d-flex align-items-center justify-content-between" style="background-color: #f1f1f1;">
+                <span class="psw"><a href="./farmer_signup">Signup</a></span>
+                <button type="button" class='cancelbtn' id="cancelBtn" class="cancelbtn">Cancel</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- <script src="../static/scripts.js"></script>
+    <script>
+        document.getElementById("cancelBtn").addEventListener("click", function (event) {
+            document.querySelector("#username").value = "";
+        });
+
+
+        document.getElementById("cancelBtn").addEventListener("click", function (event) {
+            document.querySelector("#password").value = "";
+        });
+
+
+    </script> -->
+</body>
+
+</html>

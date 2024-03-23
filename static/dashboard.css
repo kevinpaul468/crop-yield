@@ -1,0 +1,110 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+#email,
+#password {
+    width: 80%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: block;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+}
+
+button {
+
+    color: teal;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+}
+
+button:hover {
+    opacity: 0.8;
+}
+
+.login {
+    width: 75px;
+    background-color: #04aa6d;
+    padding: 10px 18px;
+}
+
+
+.container {
+    padding: 16px;
+}
+
+span.psw {
+    float: right;
+    padding-top: 16px;
+}
+
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 5% auto 15% auto;
+    border: 1px solid #888;
+    width: 80%;
+}
+
+#welcome {
+    width: 80%;
+    margin: auto;
+    font-size: 45px;
+    margin-bottom: 30px;
+    margin-top: 30px;
+}
+
+.table-container {
+    width: 100%;   
+    margin: 5px;
+    padding: 5px;
+    overflow-x:auto;
+
+}
+
+table {
+    width: 100%;
+    border: 2px solid black;
+    border-collapse: collapse;
+    border-radius: 10px;
+}
+
+table,
+td,
+th {
+    font-size: large;
+    padding: 3px;
+}
+
+th {
+    text-align: center;
+    text-transform: capitalize;
+    background-color: #1cc9cc;
+}
+
+tr {
+    height: 50px;
+}
+
+tr:nth-child(even) {
+    background-color: #08f443;
+}
+
+tr:hover {
+    background-color: #22591a;
+}
+
+td,
+th {
+    border: 2px solid black;
+    height: 200%;
+    border-collapse: collapse;
+    /* border: none; */
+}
