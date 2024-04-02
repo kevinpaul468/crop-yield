@@ -199,6 +199,16 @@ def admin():
             query2 = "SELECT * FROM data"
             qurey3 = "SELECT rainfall FROM data order by rainfall"
             query4 = "SELECT yield from data order by rainfall "
+            query5 = "SELECT fertilizer from data order by fertilizer"
+            query6 = "SELECT yield from data order by fertilizer"
+            query7 = "SELECT temperature from data order by temperature"
+            query8 = "SELECT yield from data order by temperature"
+            query9 = "SELECT nitrogen from data order by nitrogen"
+            query10 = "SELECT yield from data order by nitrogen"
+            query11 = "SELECT phosphorus from data order by phosphorus"
+            query12 = "SELECT yield from data order by phosphorus"
+            query13 = "SELECT potassium from data order by potassium"
+            query14 = "SELECT yield from data order by potassium"
             try:
                 cur.execute(query1)
                 cur.execute(query2)
@@ -207,9 +217,34 @@ def admin():
                 rfl = cur.fetchall()
                 rainfall_values = [row[0] for row in rfl]
                 cur.execute(query4)
-                yld = cur.fetchall()
-                yield_values = [row[0] for row in yld]
-                return render_template('admin.html', rows=rows, rainfall_values=rainfall_values,yield_values=yield_values , is_logged_in=True)
+                yld_rain = cur.fetchall()
+                yield_values_rain = [row[0] for row in yld_rain]
+                cur.execute(query5)
+                fertilizer_values = cur.fetchall()
+                cur.execute(query6)
+                yld_fertilizer = cur.fetchall()
+                yield_values_fertilizer = [row[0] for row in yld_fertilizer]
+                cur.execute(query7)
+                temperature_values = cur.fetchall()
+                cur.execute(query8)
+                yld_temperature = cur.fetchall()
+                yield_values_temperature = [row[0] for row in yld_temperature]
+                cur.execute(query9)
+                nitrogen_values = cur.fetchall()
+                cur.execute(query10)
+                yld_nitrogen = cur.fetchall()
+                yield_values_nitrogen = [row[0] for row in yld_nitrogen]
+                cur.execute(query11)
+                phosphorous_values = cur.fetchall()
+                cur.execute(query12)
+                yld_phosphorus = cur.fetchall()
+                yield_values_phosphorous = [row[0] for row in yld_phosphorus]
+                cur.execute(query13)
+                potassium_values = cur.fetchall()
+                cur.execute(query14)
+                yld_potassium = cur.fetchall()
+                yield_values_potassium = [row[0] for row in yld_potassium]
+                return render_template('admin.html', rows=rows, rainfall_values=rainfall_values,fertilizer_values=fertilizer_values, temperature_values =temperature_values,nitrogen_values = nitrogen_values, phosphorous_values= phosphorous_values, potassium_values= potassium_values, yield_values_rain=yield_values_rain ,yield_values_fertilizer= yield_values_fertilizer,yield_values_temperature = yield_values_temperature,yield_values_nitrogen= yield_values_nitrogen, yield_values_potassium= yield_values_potassium, yield_values_phosphorous=yield_values_phosphorous, is_logged_in=True)
             except sqlite3.Error as e:
                 print("Error executing query:", e)
                 conn.close()
