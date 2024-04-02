@@ -37,3 +37,10 @@ def fetchTmpAndRain():
     except Exception as e:
         # Print any exceptions that occur during the request
         print("Error:", e)
+
+def main():
+    fetchTmpAndRain()
+
+
+if __name__ == "__main__":
+    main()

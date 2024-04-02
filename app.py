@@ -1,4 +1,5 @@
 from flask import Flask, request, render_template, redirect, url_for
+import requests
 import sqlite3
 import pandas as pd
 import numpy as np
@@ -53,14 +54,14 @@ def farmer_signup():
         try:
             input_dict["yield"] = 0
             cur.execute(query, (name, email, password, phone, location))
-            conn.commit()  # Add this line to commit the changes to the database
+            conn.commit()  
             return redirect(url_for('farmer_login'))
         
         except sqlite3.Error as e:
             print("Error executing query:", e)
             conn.close()
             return render_template('farmer_signup.html',error="Email alredy registered")
-        # return redirect(url_for('farmer_login'))
+        
 
 @app.route('/predict', methods=['POST'])
 def predict():
@@ -103,14 +104,14 @@ def farmer_dashboard():
         cur.execute(query, (email,))
         rows = cur.fetchall()
         if len(rows) == 0:
-            # Email does not exist in the database
+            
             return render_template('farmer_login.html', error="Email does not exist")
         else:
-            # Email exists, check password
-            stored_password = rows[0][2]  # Assuming password is stored in the third column
+            
+            stored_password = rows[0][2]  
             if password == stored_password:
                 name= rows[0][0]
-                # Password is correct, log in the farmer
+                
                 
                 query = "SELECT * FROM data WHERE email = ?"
                 try:
@@ -121,7 +122,7 @@ def farmer_dashboard():
                     
                 return render_template('farmer_dashboard.html',name=name, email=email, logged_in=True, rows=rows)
             else:
-                # Password is incorrect
+                
                 return render_template('farmer_login.html', error="Incorrect password")
     except sqlite3.Error as e:
         print("Error executing query:", e)
@@ -133,16 +134,19 @@ def farmer_dashboard():
 @app.route('/output', methods=['POST'])
 def output():
     email = request.form.get('email')
-    input_dict["rainfall"] = request.form.get('rainfall')
+    api_data = fetchTmpAndRain(email)
+    input_dict["temperature"] = api_data[0]
+    input_dict["rainfall"] = api_data[1]
+    # input_dict["rainfall"] = request.form.get('rainfall')
     input_dict["fertilizer"] = request.form.get('fertilizer')
-    input_dict["temperature"] = request.form.get('temperature')
+    # input_dict["temperature"] = request.form.get('temperature')
     input_dict["nitrogen"] = request.form.get('nitrogen')
     input_dict["phosphorus"] = request.form.get('phosphorus')
     input_dict["potassium"] = request.form.get('potassium')
 
     svm = load('SVM_model.joblib')
 
-    # Make predictions for a single data point
+    
     input_data = np.array([[float(input_dict['rainfall']), float(input_dict['fertilizer']), float(input_dict['temperature']), float(input_dict['nitrogen']), float(input_dict['phosphorus']), float(input_dict['potassium'])]])
     prediction = svm.predict(input_data)
     print("Predicted Yield:", prediction[0])
@@ -169,7 +173,7 @@ def output():
     query = "INSERT INTO data VALUES(?,?,?,?,?,?,?,?)"
     try:
         cur.execute(query, (email, input_dict["rainfall"], input_dict["fertilizer"], input_dict["temperature"], input_dict["nitrogen"], input_dict["phosphorus"], input_dict["potassium"], prediction[0]))
-        conn.commit()  # Add this line to commit the changes to the database
+        conn.commit()  
         rows = cur.fetchall()
     except sqlite3.Error as e:
         print("Error executing query:", e)
@@ -253,8 +257,64 @@ def admin():
             return render_template('admin.html', error="Invalid credentials")
     return render_template('admin.html')
 
-# Load your dataset
-# Assuming your dataset is in a CSV file named 'data.csv'
+
+
+
+
+
+
+
+
+def fetchTmpAndRain(email):
+    con = sqlite3.connect('crop_yield.db')
+    cur = con.cursor()
+    query = "SELECT location FROM farmers WHERE email = ?"
+    cur.execute(query, (email,))
+    location = cur.fetchone()[0]
+
+
+    if " " in location:
+        firstname,secondname =location.split(" ")
+        location = firstname + "%20" + secondname
+
+
+    apikey= "HMY3LJFCPBTX77YGNHNBMKUU2"
+    url = "https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/"+location+"/?key="+apikey
+
+    try:
+        
+        response = requests.get(url)
+        
+        
+        if response.status_code == 200:
+            
+            weather_data = response.json()
+            
+            
+            temperatures = []
+            rainfalls = []
+            for day in weather_data['days']:
+                temperatures.append(day['temp'])
+                rainfalls.append(day['precip'])
+
+            
+            average_temperature = sum(temperatures) / len(temperatures)
+            average_rainfall = sum(rainfalls) / len(rainfalls)
+
+            print("Average Temperature:", round(average_temperature, 2), "°F")
+            print("Average Rainfall:", round(average_rainfall, 2), "inches")
+            return (round(average_temperature, 2), round(average_rainfall, 2))
+
+        else:
+            
+            print("Error:", response.status_code, response.text)
+            
+    except Exception as e:
+        
+        print("Error:", e)
+
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)
