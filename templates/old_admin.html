@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Page</title>
+    <link rel="stylesheet" href="../static/admin.css">
+</head>
+<style>
+
+    .imgs{
+        display: inline;
+        aspect-ratio: 2/3;
+        padding: 25px;
+    }
+    .box{
+        display: inline;
+        height: 200px;
+        width: 200px;
+    }
+    .pic1{
+        height: 600px;
+        width: 600px;
+        margin-left: 360px;
+
+    }
+    .pic2{
+        height: 600px;
+        width: 600px;
+        margin-left: 220px;
+        
+    }
+    .g1{
+        height: 200px;
+        width: 200px;
+        display: inline;
+    }
+    .g2{
+        height: 490px;
+        width: 300px;
+        display: inline;
+    }
+    .rainfallChart{
+        height: 490px;
+        width: 300px;
+        display: inline;
+    }
+</style>
+
+<body>
+    {% if not is_logged_in %}
+    <h1 class="head1">Admin Page</h1>
+    <div id="loginContainer" class="modal">
+        <form id="loginForm" class="modal-content animate" method="post">
+
+            <div class="container">
+                <label for="email">
+                    <b>email</b>
+                </label>
+                <input type="text" id="email" placeholder="Enter email" name="email">
+
+                <label for="password">
+                    <b>Password</b>
+                </label>
+                <input type="password" id="password" placeholder="Enter Password" name="password">
+
+                <button type="submit" class='btn btn-success login '>Submit</button>
+            </div>
+        </form>
+    </div>
+    {% else %}
+    <h1 id="welcome">Welcome, Admin</h1>
+
+    <div class="imgs">
+        <img class="pic1" src="/static/images/svm1.jpeg" style="float: left; ">
+        <img class="pic2" src="/static/images/svm2.jpeg" style="float: left; ">
+    </div>
+    <div class="box">
+
+        <div class="graphs-container">
+            <!-- Row 1 -->
+            <div class="graph-row">
+                <!-- Rainfall Chart -->
+                <div class="graph-container">
+                    <canvas id="rainfallChart"></canvas>
+                </div>
+    
+                <!-- Fertiliser Chart -->
+                <div class="graph-container">
+                    <canvas id="fertiliserChart"></canvas>
+                </div>
+            </div>
+    
+            <!-- Row 2 -->
+            <div class="graph-row">
+                <!-- Temperature Chart -->
+                <div class="graph-container">
+                    <canvas id="temperatureChart"></canvas>
+                </div>
+    
+                <!-- Nitrogen Chart -->
+                <div class="graph-container">
+                    <canvas id="nitrogenChart"></canvas>
+                </div>
+            </div>
+    
+            <!-- Row 3 -->
+            <div class="graph-row">
+                <!-- Phosphorous Chart -->
+                <div class="graph-container">
+                    <canvas id="phosphorousChart"></canvas>
+                </div>
+    
+                <!-- Potassium Chart -->
+                <div class="graph-container">
+                    <canvas id="potassiumChart"></canvas>
+                </div>
+            </div>
+        </div>
+    
+    </div>
+
+
+    <div class="table-container">
+        <table>
+            <tr>
+                <th>Email</th>
+                <th>rainfall</th>
+                <th>fertilizer</th>
+                <th>temperature</th>
+                <th>nitrogen</th>
+                <th>phospherous</th>
+                <th>pottasium</th>
+                <th>yield</th>
+            </tr>
+
+            {% for row in rows %}
+            <tr>
+                {% for value in row %}
+                <td>{{ value }}</td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    <!-- <canvas id="rainfallChart"></canvas> -->
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    var ctx = document.getElementById('rainfallChart').getContext('2d');
+    var rainfall_values = JSON.parse('{{ rainfall_values | tojson | safe }}');
+    var yield_values = JSON.parse('{{ yield_values_rain | tojson | safe }}'); 
+    
+    var dataPoints = rainfall_values.map(function(rainfall, index) {
+        return {
+            x: rainfall,  // Assign the rainfall as the x-axis value
+            y: yield_values[index]
+        };
+    });
+
+    // Sort dataPoints based on rainfall
+    dataPoints.sort(function(a, b) {
+        return a.x - b.x;
+    });
+
+    var rainfallChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            datasets: [{
+                label: 'Rainfall vs Yield',
+                data: dataPoints,
+                borderColor: 'rgba(255, 99, 132, 1)',
+                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                borderWidth: 1,
+                fill: false,
+                showLine: true  // This line is optional as 'showLine' is true by default for line charts
+            }]
+        },
+        options: {
+            scales: {
+                x: {
+                    type: 'linear',  // Specify that the x-axis is a linear scale
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Rainfall'
+                    }
+                },
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Yield'
+                    }
+                }
+            }
+        }
+    });
+</script>
+
+<script>
+    var ctx = document.getElementById('fertiliserChart').getContext('2d');
+    var fertiliser_values = JSON.parse('{{ fertilizer_values | tojson | safe }}');
+    var yield_values = JSON.parse('{{ yield_values_fertilizer | tojson | safe }}'); 
+    
+    var dataPoints = fertiliser_values.map(function(fertiliser, index) {
+        return {
+            x: fertiliser,  // Assign the fertiliser as the x-axis value
+            y: yield_values[index]
+        };
+    });
+
+    // Sort dataPoints based on fertiliser
+    dataPoints.sort(function(a, b) {
+        return a.x - b.x;
+    });
+
+    var fertiliserChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            datasets: [{
+                label: 'Fertiliser vs Yield',
+                data: dataPoints,
+                borderColor: 'rgba(255, 99, 132, 1)',
+                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                borderWidth: 1,
+                fill: false,
+                showLine: true  // This line is optional as 'showLine' is true by default for line charts
+            }]
+        },
+        options: {
+            scales: {
+                x: {
+                    type: 'linear',  // Specify that the x-axis is a linear scale
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Fertiliser'
+                    }
+                },
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Yield'
+                    }
+                }
+            }
+        }
+    });
+</script>
+
+<script>
+    var ctx = document.getElementById('temperatureChart').getContext('2d');
+    var temperature_values = JSON.parse('{{ temperature_values | tojson | safe }}');
+    var yield_values = JSON.parse('{{ yield_values_temperature | tojson | safe }}'); 
+    
+    var dataPoints = temperature_values.map(function(temperature, index) {
+        return {
+            x: temperature,  // Assign the temperature as the x-axis value
+            y: yield_values[index]
+        };
+    });
+
+    // Sort dataPoints based on temperature
+    dataPoints.sort(function(a, b) {
+        return a.x - b.x;
+    });
+
+    var temperatureChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            datasets: [{
+                label: 'Temperature vs Yield',
+                data: dataPoints,
+                borderColor: 'rgba(255, 99, 132, 1)',
+                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                borderWidth: 1,
+                fill: false,
+                showLine: true  // This line is optional as 'showLine' is true by default for line charts
+            }]
+        },
+        options: {
+            scales: {
+                x: {
+                    type: 'linear',  // Specify that the x-axis is a linear scale
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Temperature'
+                    }
+                },
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Yield'
+                    }
+                }
+            }
+        }
+    });
+</script>
+
+<script>
+    var ctx = document.getElementById('nitrogenChart').getContext('2d');
+    var nitrogen_values = JSON.parse('{{ nitrogen_values | tojson | safe }}');
+    var yield_values = JSON.parse('{{ yield_values_nitrogen | tojson | safe }}'); 
+    
+    var dataPoints = nitrogen_values.map(function(nitrogen, index) {
+        return {
+            x: nitrogen,  // Assign the nitrogen as the x-axis value
+            y: yield_values[index]
+        };
+    });
+
+    // Sort dataPoints based on nitrogen
+    dataPoints.sort(function(a, b) {
+        return a.x - b.x;
+    });
+
+    var nitrogenChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            datasets: [{
+                label: 'Nitrogen vs Yield',
+                data: dataPoints,
+                borderColor: 'rgba(255, 99, 132, 1)',
+                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                borderWidth: 1,
+                fill: false,
+                showLine: true  // This line is optional as 'showLine' is true by default for line charts
+            }]
+        },
+        options: {
+            scales: {
+                x: {
+                    type: 'linear',  // Specify that the x-axis is a linear scale
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Nitrogen'
+                    }
+                },
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Yield'
+                    }
+                }
+            }
+        }
+    });
+</script>
+
+<script>
+    var ctx = document.getElementById('phosphorousChart').getContext('2d');
+    var phosphorous_values = JSON.parse('{{ phosphorous_values | tojson | safe }}');
+    var yield_values = JSON.parse('{{ yield_values_phosphorous | tojson | safe }}'); 
+    
+    var dataPoints = phosphorous_values.map(function(phosphorous, index) {
+        return {
+            x: phosphorous,  // Assign the phosphorous as the x-axis value
+            y: yield_values[index]
+        };
+    });
+
+    // Sort dataPoints based on phosphorous
+    dataPoints.sort(function(a, b) {
+        return a.x - b.x;
+    });
+
+    var phosphorousChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            datasets: [{
+                label: 'Phosphorous vs Yield',
+                data: dataPoints,
+                borderColor: 'rgba(255, 99, 132, 1)',
+                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                borderWidth: 1,
+                fill: false,
+                showLine: true  // This line is optional as 'showLine' is true by default for line charts
+            }]
+        },
+        options: {
+            scales: {
+                x: {
+                    type: 'linear',  // Specify that the x-axis is a linear scale
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Phosphorous'
+                    }
+                },
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Yield'
+                    }
+                }
+            }
+        }
+    });
+</script>
+
+<script>
+    var ctx = document.getElementById('potassiumChart').getContext('2d');
+    var potassium_values = JSON.parse('{{ potassium_values | tojson | safe }}');
+    var yield_values = JSON.parse('{{ yield_values_potassium | tojson | safe }}'); 
+    
+    var dataPoints = potassium_values.map(function(potassium, index) {
+        return {
+            x: potassium,  // Assign the potassium as the x-axis value
+            y: yield_values[index]
+        };
+    });
+
+    // Sort dataPoints based on potassium
+    dataPoints.sort(function(a, b) {
+        return a.x - b.x;
+    });
+
+    var potassiumChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            datasets: [{
+                label: 'Potassium vs Yield',
+                data: dataPoints,
+                borderColor: 'rgba(255, 99, 132, 1)',
+                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                borderWidth: 1,
+                fill: false,
+                showLine: true  // This line is optional as 'showLine' is true by default for line charts
+            }]
+        },
+        options: {
+            scales: {
+                x: {
+                    type: 'linear',  // Specify that the x-axis is a linear scale
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Potassium'
+                    }
+                },
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Yield'
+                    }
+                }
+            }
+        }
+    });
+</script>
+    {% endif %}
+    </body>
+
+    </html>

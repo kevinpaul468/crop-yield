@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/admin.css">
+    <title>Document</title>
+    <style>
+
+    .imgs{
+        display: inline;
+        aspect-ratio: 2/3;
+        padding: 25px;
+    }
+    .box{
+        display: inline;
+        height: 200px;
+        width: 200px;
+    }
+    .pic1{
+        height: 600px;
+        width: 600px;
+        margin-left: 360px;
+
+    }
+    .pic2{
+        height: 600px;
+        width: 600px;
+        margin-left: 220px;
+        
+    }
+    .g1{
+        height: 200px;
+        width: 200px;
+        display: inline;
+    }
+    .g2{
+        height: 490px;
+        width: 300px;
+        display: inline;
+    }
+    .rainfallChart{
+        height: 490px;
+        width: 300px;
+        display: inline;
+    }
+</style>
+</head>
+<body>
+    <table>
+        <tr>
+            <th>Email</th>
+            <th>rainfall</th>
+            <th>fertilizer</th>
+            <th>temperature</th>
+            <th>nitrogen</th>
+            <th>phospherous</th>
+            <th>pottasium</th>
+            <th>yield</th>
+        </tr>
+
+        {% for row in rows %}
+        <tr>
+            {% for value in row %}
+            <td>{{ value }}</td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
